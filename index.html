@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Comienzo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-pink: #ff2d75;
+            --neon-light: #ff85a1;
+            --bg-dark: #050505;
+            --glass-border: rgba(255, 45, 117, 0.3);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            font-family: 'Playfair Display', serif;
+            color: white;
+        }
+
+        /* --- Pantalla de Inicio --- */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        /* Icono de corazón hecho con texto y CSS */
+        .intro-icon {
+            font-size: 80px;
+            color: var(--neon-pink);
+            text-shadow: 0 0 30px var(--neon-pink), 0 0 60px var(--neon-pink);
+            margin-bottom: 40px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+
+        .btn-start {
+            padding: 20px 50px;
+            background: transparent;
+            border: 2px solid var(--neon-pink);
+            color: var(--neon-light);
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 50px;
+            box-shadow: 0 0 20px var(--glass-border);
+            transition: 0.4s all ease;
+        }
+
+        .btn-start:hover {
+            background: var(--neon-pink);
+            color: white;
+            box-shadow: 0 0 50px var(--neon-pink);
+        }
+
+        /* --- Fondo de Partículas --- */
+        #canvas-particles {
+            position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.5;
+        }
+
+        /* --- La Carta de Cristal Minimalista --- */
+        .glass-card {
+            position: relative;
+            z-index: 10;
+            width: 85%;
+            max-width: 600px;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px); /* Efecto cristal potente */
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 45, 117, 0.15);
+            display: none; opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 20px;
+            z-index: -1;
+            background: linear-gradient(45deg, var(--neon-pink), transparent, var(--neon-pink));
+            opacity: 0.2;
+            filter: blur(10px);
+        }
+
+        .glass-card h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            font-size: 1.5rem;
+            letter-spacing: 6px;
+            color: var(--neon-light);
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 45, 117, 0.5);
+        }
+
+        .glass-card p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+            font-weight: 400;
+        }
+        
+        /* Pequeño adorno de texto al final */
+        .signature {
+            margin-top: 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--neon-pink);
+        }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Crush-Music.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="intro-screen">
+        <div class="intro-icon">❤️</div>
+        <button class="btn-start" onclick="iniciar()">Empezar de nuevo</button>
+    </div>
+
+    <canvas id="canvas-particles"></canvas>
+    
+    <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+        <div class="glass-card" id="card">
+            
+            <h1>Reinicio del Sistema</h1>
+            <p>
+                "A veces necesitamos que la pantalla se apague para valorar la luz. Perdóname. Hoy borro el caché de los errores pasados y ejecuto un nuevo código en nuestra historia, basado en el amor y el respeto..."
+                <br><br>
+                TU Y YO
+            </p>
+            <div class="signature">
+                ATTE: Achicopalado
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas-particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function iniciar() {
+            document.getElementById('bg-music').play().catch(() => console.log("Audio requiere interacción"));
+            
+            // Animación de salida de la intro
+            gsap.to("#intro-screen", { 
+                opacity: 0, 
+                duration: 1.2, 
+                ease: "power2.inOut",
+                onComplete: () => {
+                    document.getElementById('intro-screen').style.display = 'none';
+                    document.getElementById('card').style.display = 'block';
+                    
+                    // Animación de entrada de la carta (Cinemática)
+                    gsap.fromTo("#card", 
+                        { opacity: 0, y: 50, scale: 0.95 },
+                        { opacity: 1, y: 0, scale: 1, duration: 2, ease: "expo.out" }
+                    );
+            }});
+        }
+
+        // Partículas de fondo (Generadas por código, no son imágenes)
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 0.2 - 0.1;
+                this.speedY = Math.random() * 0.2 - 0.1;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 45, 117, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for(let i=0; i<150; i++) particles.push(new Particle());
+        }
+        function animate() {
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        initParticles(); animate();
+        window.onresize = () => { canvas.width = innerWidth; canvas.height = innerHeight; initParticles(); };
+    </script>
+</body>
+</html>
